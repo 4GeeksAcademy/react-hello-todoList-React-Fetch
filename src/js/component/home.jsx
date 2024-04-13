@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 
-//include images into your bundle
 import rigoImage from "../../img/rigo-baby.jpg";
 
 //create your first component
@@ -54,22 +53,17 @@ const Home = () => {
 		
 	}
 
-	const  deleteTask = async () => {
+	const removeTodo = async (id) => {
 		try{
-			const respDatosUsuario = await fetch("https://playground.4geeks.com/todo/todos/Oriana", 
+			const respDatosUsuario = await fetch(`https://playground.4geeks.com/todo/todos/${id}`, 
 				{
-					method:"DELETE",
-					headers:{
-						"Content-Type": "application/json"
-					},
-					body: JSON.stringify({
-						"label": newTodo,
-						"is_done": false
+					method:"DELETE"
 					  })
-				});
-
+			if(!respDatosUsuario.ok){
+				return false
+			}
+			return true
 			const data2 = await respDatosUsuario.json()
-			setList(data2.todos)
 			
 		}
 		catch (error){
@@ -83,17 +77,28 @@ const Home = () => {
 
 	const handleClick = () => {
 		console.log("New task", newTodo);
-		AddTodo()
-		obtenerDatosLista()
+		AddTodo();
+		obtenerDatosLista();
 		setList([...list, newTodo]);
 	}
 
 
-	const deleteTodo = (index) => {
-
-		const NewListTodo = list.filter((list, i) => i !== index);
-		setList(NewListTodo);
+	const deleteTodo = async (item, index) => {
+		try {
+			console.log("ESTE ES EL ITEM:",item)
+			const result = await removeTodo(item.id)
+			if(result){
+				const NewListTodo = list.filter((ele, i) => i !== index);
+				setList(NewListTodo);
+			}
+			else{
+				alert("No se puedo eliminar")
+			}
+		} catch (e) {
+			console.error("No se pudo procesar el requisito")
+		}
 	}
+
 
 	const handleChange = (e) => {
 		setNewTodo(e.target.value);
@@ -121,14 +126,15 @@ const Home = () => {
 
 				<ul className="list-group d-flex justify-content-between">
 
+					
 
 
-					 {list.map((item, index) => {
+					 {list && list.map((item, index) => {
 						return (
 							<li key={index} className={`list-group-item active d-flex justify-content-between alaing-items-center border border-dark ${index % 2 === 0 ? "bg-primary" : ""}`}>
 								{item.label}
 
-								<button className="btn-close btn-close-white " onClick={() => deleteTodo(index)}/>
+								<button className="btn-close btn-close-white " onClick={() => deleteTodo(item,index)}/>
 							</li>
 						)
 					})} 
