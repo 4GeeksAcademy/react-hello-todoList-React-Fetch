@@ -6,13 +6,13 @@ import rigoImage from "../../img/rigo-baby.jpg";
 const Home = () => {
 
 	const [newTodo, setNewTodo] = useState("");
-	const [list, setList] = useState([])
+	const [list, setList] = useState([]);
 	
 
 	useEffect(() => {
-		obtenerDatosLista()
+		obtenerDatosLista();
 		
-	}, [])
+	}, []);
 
 	const obtenerDatosLista = async () => {
 		try{
@@ -43,7 +43,7 @@ const Home = () => {
 				});
 
 			const data2 = await respDatosUsuario.json()
-			setList(data2.todos)
+			setList([...list, data2]);
 			
 		}
 		catch (error){
@@ -63,7 +63,6 @@ const Home = () => {
 				return false
 			}
 			return true
-			const data2 = await respDatosUsuario.json()
 			
 		}
 		catch (error){
